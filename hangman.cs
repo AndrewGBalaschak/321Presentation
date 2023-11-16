@@ -1,12 +1,13 @@
 /* There are three issues in this code, but they are more subtle and structural */
 using System;
+using System.Collections.Generic;
 
 class Program
 {
     static void Main()
     {
         HangmanGame hangmanGame = new HangmanGame();
-        hangmanGame.StartGame();
+        hangmanGame.PlayGame();
     }
 }
 
@@ -16,16 +17,19 @@ class HangmanGame
     private string selectedWord;
     private char[] guessedWord;
     private int attemptsLeft;
-    private string incorrectLetters;
-
-    public void StartGame()
+    private List<char> incorrectLetters;
+    
+    public HangmanGame()
     {
         Random random = new Random();
         selectedWord = words[random.Next(words.Length)];
         guessedWord = new char[selectedWord.Length];
-        attemptsLeft = 6; // * 
-        incorrectLetters = "";
-
+        attemptsLeft = 6;
+        incorrectLetters = new List<char>();
+    }
+    
+    public void PlayGame()
+    {
         for (int i = 0; i < selectedWord.Length; i++)
         {
             guessedWord[i] = '_';
@@ -36,16 +40,15 @@ class HangmanGame
             DisplayGameStatus();
             Console.Write("Enter a letter: ");
             char guessedLetter = Console.ReadKey().KeyChar;
-
-            // * 
+            
             if (selectedWord.Contains(char.ToLower(guessedLetter)))
             {
                 UpdateGuessedWord(guessedLetter);
             }
-            else
+            else if (!incorrectLetters.Contains(guessedLetter))
             {
                 attemptsLeft--;
-                incorrectLetters += guessedLetter + " "; // * 
+                incorrectLetters.Add(guessedLetter);
             }
 
             if (Array.IndexOf(guessedWord, '_') == -1)
@@ -62,9 +65,14 @@ class HangmanGame
     {
         Console.Clear();
         Console.WriteLine("Hangman Game");
-        Console.WriteLine("Word: " + new string(guessedWord)); // * 
+        Console.WriteLine("Word: " + new string(guessedWord));
         Console.WriteLine("Attempts Left: " + attemptsLeft);
-        Console.WriteLine("Incorrect Letters: " + incorrectLetters);
+        Console.Write("Incorrect Letters: ");
+        foreach (char letter in incorrectLetters)
+        {
+            Console.Write(letter);
+        }
+        Console.WriteLine();
     }
 
     private void UpdateGuessedWord(char letter)
