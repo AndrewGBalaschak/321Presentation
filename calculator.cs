@@ -12,31 +12,28 @@ class Calculator
         try
         {
             Console.Write("Enter the first number: ");
-            int num1 = Console.ReadLine(); //
+            int num1 = Convert.ToInt32(Console.ReadLine());
 
             Console.Write("Enter the second number: ");
-            int num2 = Console.ReadLine(); //
+            int num2 = Convert.ToInt32(Console.ReadLine());
 
             Console.WriteLine("Select operation (+, -, *, /): ");
-            char operation = Console.ReadLine()[0]; //
-
-            CalculatorLogic calculatorLogic = new CalculatorLogic();
-            // 
-
-            int result = calculatorLogic.PerformCalculation(num1, num2); // 
+            char operation = Console.ReadLine()[0];
+            
+            int result = CalculatorLogic.PerformCalculation(num1, num2, operation);
 
             Console.WriteLine($"Result: {result}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}"); // 
+            Console.WriteLine($"{ex.Message}");
         }
     }
 }
 
 class CalculatorLogic
 {
-    public int PerformCalculation(int num1, int num2, char operation)
+    public static int PerformCalculation(int num1, int num2, char operation)
     {
         int result = 0;
 
@@ -59,26 +56,12 @@ class CalculatorLogic
                 }
                 else
                 {
-                    Console.WriteLine("Error: Division by zero");
-                    //
+                    throw new DivideByZeroException("Error: Division by zero.");
                 }
                 break;
             default:
-                // * 
-                Console.WriteLine("Error: Invalid operation selected.");
-                //
-                break;
+                throw new InvalidOperationException("Error: Invalid operation selected.");
         }
-
         return result;
-    }
-}
-
-class CalculatorUtility
-{
-    // * 
-    public string ConvertToBinary(int decimalNumber)
-    {
-        return Convert.ToString(decimalNumber, 10);
     }
 }
